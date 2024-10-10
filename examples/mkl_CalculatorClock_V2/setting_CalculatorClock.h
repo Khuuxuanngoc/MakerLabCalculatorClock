@@ -1,7 +1,7 @@
 #ifndef setting_CalculatorClock__H
 #define setting_CalculatorClock__H
 
-#define CLOCK_MINUTE_FREE                               (10)
+#define CLOCK_MINUTE_FREE                               (1)
 
 #define CLOCK_LED_STATUS_PIN                            (10)
 #define CLOCK_LED_OFF                                   (0)

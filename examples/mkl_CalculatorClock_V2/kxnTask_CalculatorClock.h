@@ -84,6 +84,28 @@ void StopCalculate()
     // this->pLCD->print("Stop:");
 }
 
+void ShowTypeCost()
+{
+    this->pLCD->setCursor(17, 2);
+    this->pLCD->print(F("  "));
+    this->pLCD->setCursor(9, 2);
+    this->pLCD->print(String() + "*S" + (this->clockEeprom.costValueIndex + 1) + ":" + (this->clockEeprom.costValue[this->clockEeprom.costValueIndex]) + "K/h");
+}
+
+void ChangeTypeCost()
+{
+    if (this->clockEeprom.costValueIndex < (EEPROM_CALCULATOR_CLOCK_MAX_NUM_COST - 1))
+    {
+        this->clockEeprom.costValueIndex++;
+    }
+    else
+    {
+        this->clockEeprom.costValueIndex = 0;
+    }
+
+    this->ShowTypeCost();
+}
+
 void ShowStartTimeAtSetup()
 {
     if (this->clockEeprom.counterStatus == true)
@@ -147,22 +169,32 @@ void loop()
         this->pLCD->setCursor(10, 1);
         this->pLCD->print(this->DateTimeToString(timeStopValue) + "   ");
 
-        if (totalMinute > CLOCK_MINUTE_FREE)
+        // this->pLCD->setCursor(9, 2);
+        // this->pLCD->print(String() + "*S" + (this->clockEeprom.costValueIndex + 1) + ":" + (this->clockEeprom.costValue[this->clockEeprom.costValueIndex]) + "K/h");
+        this->ShowTypeCost();
+
+        this->pLCD->setCursor(0, 2);
+        this->pLCD->print(String() + totalMinute + " min   ");
+
+        if (totalMinute >= CLOCK_MINUTE_FREE)
         {
-            totalMinute = totalMinute - CLOCK_MINUTE_FREE;
+            unsigned long totalMinuteFee = totalMinute - CLOCK_MINUTE_FREE;
             digitalWrite(CLOCK_LED_STATUS_PIN, CLOCK_LED_ON);
 
-            this->pLCD->setCursor(0, 2);
-            this->pLCD->print(String() + totalMinute + " min   ");
+            // this->pLCD->setCursor(0, 2);
+            // this->pLCD->print(String() + totalMinuteFee + " min   ");
 
-            this->pLCD->setCursor(9, 2);
-            this->pLCD->print(String() + "*S" + (this->clockEeprom.costValueIndex + 1) +":" + (this->clockEeprom.costValue[this->clockEeprom.costValueIndex]) + "K/h");
+            // this->pLCD->setCursor(9, 2);
+            // this->pLCD->print(String() + "*S" + (this->clockEeprom.costValueIndex + 1) +":" + (this->clockEeprom.costValue[this->clockEeprom.costValueIndex]) + "K/h");
 
             // this->pLCD->setCursor(11, 2);
             // this->pLCD->print(String() + (this->clockEeprom.costValue[this->clockEeprom.costValueIndex]/60.0) + "K/min");
-            moneyValue = (float)(totalMinute * this->clockEeprom.costValue[this->clockEeprom.costValueIndex] / 60.0);
+            moneyValue = (float)(totalMinuteFee * this->clockEeprom.costValue[this->clockEeprom.costValueIndex] / 60.0);
             this->pLCD->setCursor(0, 3);
             this->pLCD->print(String() + ">>> Fee: " + moneyValue + "K   ");
+        }else{
+            this->pLCD->setCursor(0, 3);
+            this->pLCD->print(String() + ">>> **FREE**");
         }
 
         Serial.println(this->DateTimeToString(timeStopValue));
@@ -207,6 +239,11 @@ void CheckCommand(String paCmd)
     {
         setTimeFromSerial(paCmd);
     }
+}
+
+uint8_t isCalculating()
+{
+    return this->clockEeprom.counterStatus == true;
 }
 END
 
