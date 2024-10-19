@@ -29,7 +29,8 @@ uint16_t eepromAddress;
 
 Str_ClockEeprom clockEeprom;
 
-void lcdSetup() {
+void lcdSetup()
+{
   if (!pLCD)
     pLCD = new MKL_LiquidCrystal_I2C(0x27, 20, 4);
 
@@ -37,15 +38,18 @@ void lcdSetup() {
   pLCD->backlight();
 }
 
-void SaveEeprom() {
+void SaveEeprom()
+{
   clockEeprom.eepromAddress = this->eepromAddress;
   // clockEeprom.timeStartValue = kxnTask_RTC1.getTimeNow();
   EEPROM.put(this->eepromAddress, clockEeprom);
 }
 
-void ReadEeprom() {
+void ReadEeprom()
+{
   EEPROM.get(this->eepromAddress, clockEeprom);
-  if (this->clockEeprom.firstCheck != EEPROM_CALCULATOR_CLOCK_CHECK_FIRST_VALUE) {
+  if (this->clockEeprom.firstCheck != EEPROM_CALCULATOR_CLOCK_CHECK_FIRST_VALUE)
+  {
     this->clockEeprom.firstCheck = EEPROM_CALCULATOR_CLOCK_CHECK_FIRST_VALUE;
     this->clockEeprom.counterStatus = false;
     this->clockEeprom.costValueIndex = 0;
@@ -69,7 +73,8 @@ void ReadEeprom() {
   }
 }
 
-void StartCalculate() {
+void StartCalculate()
+{
   this->clockEeprom.timeStartValue = kxnTask_RTC1.getTimeNow();
   this->clockEeprom.counterStatus = true;
   this->SaveEeprom();
@@ -77,7 +82,8 @@ void StartCalculate() {
   this->ShowStartTimeAtSetup();
 }
 
-void StopCalculate() {
+void StopCalculate()
+{
   this->clockEeprom.counterStatus = false;
   digitalWrite(CLOCK_LED_STATUS_PIN, CLOCK_LED_OFF);
   this->SaveEeprom();
@@ -85,9 +91,13 @@ void StopCalculate() {
   // this->pLCD->print("Stop:");
 }
 
-void ShowTypeCost() {
-  this->pLCD->setCursor(0, 2);
-  this->pLCD->print(String() + this->clockEeprom.minFreeValue[this->clockEeprom.costValueIndex] + " min   ");
+void ShowTypeCost()
+{
+  if (this->clockEeprom.counterStatus == false)
+  {
+    this->pLCD->setCursor(0, 2);
+    this->pLCD->print(String() + this->clockEeprom.minFreeValue[this->clockEeprom.costValueIndex] + " min   ");
+  }
 
   this->pLCD->setCursor(17, 2);
   this->pLCD->print(F("  "));
@@ -95,18 +105,24 @@ void ShowTypeCost() {
   this->pLCD->print(String() + "*S" + (this->clockEeprom.costValueIndex + 1) + ":" + (this->clockEeprom.costValue[this->clockEeprom.costValueIndex]) + "K/h");
 }
 
-void ChangeTypeCost() {
-  if (this->clockEeprom.costValueIndex < (EEPROM_CALCULATOR_CLOCK_MAX_NUM_COST - 1)) {
+void ChangeTypeCost()
+{
+  if (this->clockEeprom.costValueIndex < (EEPROM_CALCULATOR_CLOCK_MAX_NUM_COST - 1))
+  {
     this->clockEeprom.costValueIndex++;
-  } else {
+  }
+  else
+  {
     this->clockEeprom.costValueIndex = 0;
   }
 
   this->ShowTypeCost();
 }
 
-void ShowStartTimeAtSetup() {
-  if (this->clockEeprom.counterStatus == true) {
+void ShowStartTimeAtSetup()
+{
+  if (this->clockEeprom.counterStatus == true)
+  {
     this->pLCD->clear();
     this->pLCD->setCursor(1, 0);
     this->pLCD->print("Start:");
@@ -121,16 +137,20 @@ void ShowStartTimeAtSetup() {
     this->pLCD->print(String() + this->clockEeprom.timeStartValue.hour() + ":" + this->clockEeprom.timeStartValue.minute() + ":" + this->clockEeprom.timeStartValue.second() + "   ");
 
     digitalWrite(CLOCK_LED_STATUS_PIN, CLOCK_LED_OFF);
-  } else {
+  }
+  else
+  {
     this->ShowTypeCost();
   }
 }
 
-String DateTimeToString(DateTime paDT) {
+String DateTimeToString(DateTime paDT)
+{
   return String() + paDT.hour() + ":" + paDT.minute() + ":" + paDT.second();
 }
 
-void setup() {
+void setup()
+{
   this->lcdSetup();
 
   this->eepromAddress = 0;
@@ -147,9 +167,11 @@ void setup() {
   setState(0);
 }
 
-void loop() {
+void loop()
+{
 
-  if (this->clockEeprom.counterStatus == true) {
+  if (this->clockEeprom.counterStatus == true)
+  {
     // Serial.println(String() + kxnTask_RTC1.getTimeNow().hour() + ":" + kxnTask_RTC1.getTimeNow().minute() + ":" + kxnTask_RTC1.getTimeNow().second());
 
     DateTime timeStopValue = kxnTask_RTC1.getTimeNow();
@@ -169,7 +191,8 @@ void loop() {
     this->pLCD->setCursor(0, 2);
     this->pLCD->print(String() + totalMinute + " min   ");
 
-    if (totalMinute >= CLOCK_MINUTE_FREE) {
+    if (totalMinute >= CLOCK_MINUTE_FREE)
+    {
       unsigned long totalMinuteFee = totalMinute - CLOCK_MINUTE_FREE;
       digitalWrite(CLOCK_LED_STATUS_PIN, CLOCK_LED_ON);
 
@@ -184,7 +207,9 @@ void loop() {
       moneyValue = (float)(totalMinuteFee * this->clockEeprom.costValue[this->clockEeprom.costValueIndex] / 60.0);
       this->pLCD->setCursor(0, 3);
       this->pLCD->print(String() + ">>> Fee: " + moneyValue + "K   ");
-    } else {
+    }
+    else
+    {
       this->pLCD->setCursor(0, 3);
       this->pLCD->print(String() + ">>> **FREE**");
     }
@@ -195,35 +220,46 @@ void loop() {
   kDelay(1000);
 }
 
-void setTimeFromSerial(String input) {
+void setTimeFromSerial(String input)
+{
   int hour, minute, second;
   sscanf(input.c_str(), "settime,%d,%d,%d", &hour, &minute, &second);
   kxnTask_RTC1.setTimeNow(hour, minute, second);
   Serial.println("Thời gian đã được thiết lập!");
 }
 
-void setCostToEeprom(uint8_t paIndex, uint32_t paCost) {
-  if (paIndex < EEPROM_CALCULATOR_CLOCK_MAX_NUM_COST) {
+void setCostToEeprom(uint8_t paIndex, uint32_t paCost)
+{
+  if (paIndex < EEPROM_CALCULATOR_CLOCK_MAX_NUM_COST)
+  {
     this->clockEeprom.costValue[paIndex] = paCost;
     this->SaveEeprom();
   }
 }
 
-void CheckCommand(String paCmd) {
-  if (paCmd == "") {
+void CheckCommand(String paCmd)
+{
+  if (paCmd == "")
+  {
     return;
   }
 
-  if (paCmd.indexOf("start") > -1) {
+  if (paCmd.indexOf("start") > -1)
+  {
     this->StartCalculate();
-  } else if (paCmd.indexOf("stop") > -1) {
+  }
+  else if (paCmd.indexOf("stop") > -1)
+  {
     this->StopCalculate();
-  } else if (paCmd.indexOf("settime") > -1) {
+  }
+  else if (paCmd.indexOf("settime") > -1)
+  {
     setTimeFromSerial(paCmd);
   }
 }
 
-uint8_t isCalculating() {
+uint8_t isCalculating()
+{
   return this->clockEeprom.counterStatus == true;
 }
 END
