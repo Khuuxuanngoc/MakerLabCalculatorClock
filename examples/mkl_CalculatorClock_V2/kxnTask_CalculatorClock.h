@@ -126,6 +126,8 @@ void ShowStartTimeAtSetup()
                           ":" + this->clockEeprom.timeStartValue.second() + "   ");
 
         digitalWrite(CLOCK_LED_STATUS_PIN, CLOCK_LED_OFF);
+    }else{
+        this->ShowTypeCost();
     }
 }
 

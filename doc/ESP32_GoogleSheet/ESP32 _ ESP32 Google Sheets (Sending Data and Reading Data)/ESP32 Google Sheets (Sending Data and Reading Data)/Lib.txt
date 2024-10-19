@@ -1,0 +1,3 @@
+- DHT sensor library (V1.3.5) : Install via "Manage Libraries" or "Library Manager" on the Arduino IDE.
+- Adafruit Unified Sensor (V1.0.3) : Install via "Manage Libraries" or "Library Manager" on the Arduino IDE.
+- LiquidCrystal_I2C (V1.1.4) : https://github.com/johnrickman/LiquidCrystal_I2C

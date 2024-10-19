@@ -1,0 +1,5 @@
+ESP32 _ ESP32 Google Sheets (Sending Data and Reading Data).rar
+	https://drive.google.com/file/d/1650fl6l9afs2_QvLtxjDkTIP77LD9SM7/view
+
+Video:
+	https://www.youtube.com/watch?v=u7TYu61l0t4&t=1343s
