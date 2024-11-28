@@ -277,9 +277,12 @@ public:
     isChecksumTerm = false;
   }
 };
+#include "chuoiStart_Stop_Macro.h"
 
 kxnTachData kxnTachData1;
+
 kxnTachData_T2  kxnTachData_T2_1;
+// chuoiStart_Stop_Macro kxnTachData_T2_1;
 // char term[MAX_TERM_SIZE];
 // char key[MAX_TERM_SIZE];
 // char values[3][MAX_TERM_SIZE]; // Giả sử có tối đa 3 giá trị
@@ -419,13 +422,24 @@ void loop()
       }
       // Reset lại để xử lý lệnh tiếp theo
       kxnTachData_T2_1.resetForNext();
-      // curTermOffset = 0;
-      // curValueIndex = 0;
-      // parity = 0;
-      // memset(key, 0, sizeof(key));
-      // memset(values, 0, sizeof(values));
-      // keyCaptured = false;
-      // isChecksumTerm = false;
+      
+    }
+
+    if (KXN_DATA_DECODE(chuoiStart_Stop_Macro, tempChar))
+    {
+      Serial.print("Key: ");
+      Serial.println(KXN_DATA_KEY(chuoiStart_Stop_Macro));
+      for (int i = 0; i < KXN_DATA_CUR_INDEX(chuoiStart_Stop_Macro); ++i)
+      {
+        Serial.print("Value ");
+        Serial.print(i + 1);
+        Serial.print(": ");
+        Serial.println(KXN_DATA_VALUE(chuoiStart_Stop_Macro,i));
+      }
+      // Reset lại để xử lý lệnh tiếp theo
+      // kxnTachData_T2_1.resetForNext();
+      KXN_DATA_RESET(chuoiStart_Stop_Macro);
+      
     }
   }
 }
