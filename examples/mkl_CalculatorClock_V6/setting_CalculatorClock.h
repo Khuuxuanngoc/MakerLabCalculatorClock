@@ -13,7 +13,7 @@
 #define CLOCK_LED_OFF                                   (0)
 #define CLOCK_LED_ON                                    !CLOCK_LED_OFF
 
-#define EEPROM_CALCULATOR_CLOCK_CHECK_FIRST_VALUE       111
+#define EEPROM_CALCULATOR_CLOCK_CHECK_FIRST_VALUE       240
 #define EEPROM_CALCULATOR_CLOCK_MAX_NUM_COST            4
 
 

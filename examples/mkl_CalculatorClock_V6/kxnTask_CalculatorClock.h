@@ -87,9 +87,26 @@ void StartCalculate()
 
 void StopCalculate()
 {
-  this->clockEeprom.counterStatus = false;
   digitalWrite(CLOCK_LED_STATUS_PIN, CLOCK_LED_OFF);
-  this->SaveEeprom();
+
+  if(this->clockEeprom.counterStatus == true)
+  {
+    this->clockEeprom.counterStatus = false;
+    // digitalWrite(CLOCK_LED_STATUS_PIN, CLOCK_LED_OFF);
+    this->SaveEeprom();
+  }
+  else
+  {
+    // this->clockEeprom.counterStatus = false;
+    // digitalWrite(CLOCK_LED_STATUS_PIN, CLOCK_LED_OFF);
+    this->SaveEeprom();
+    ShowTypeCost();
+  }
+  // this->clockEeprom.counterStatus = false;
+  // digitalWrite(CLOCK_LED_STATUS_PIN, CLOCK_LED_OFF);
+  // this->SaveEeprom();
+  // // ShowTypeCost();
+
   // this->pLCD->setCursor(0, 1);
   // this->pLCD->print("Stop:");
 }
@@ -105,7 +122,7 @@ void ShowTypeCost()
     this->pLCD->print(String() + this->clockEeprom.minFreeValue[this->clockEeprom.costValueIndex] + " min   ");
 
     this->pLCD->setCursor(0, 3);
-      this->pLCD->print(String() + "Old Fee: " + this->clockEeprom.lastFee + "K   ");
+      this->pLCD->print(String() + "Old Fee: " + (uint16_t)this->clockEeprom.lastFee + "K   ");
   }
 
   this->pLCD->setCursor(17, 2);
@@ -234,8 +251,10 @@ void loop()
       // this->pLCD->setCursor(11, 2);
       // this->pLCD->print(String() + (this->clockEeprom.costValue[this->clockEeprom.costValueIndex]/60.0) + "K/min");
       moneyValue = (float)(totalMinuteFee * this->clockEeprom.costValue[this->clockEeprom.costValueIndex] / 60.0);
+      this->pLCD->setCursor(10, 3);
+      this->pLCD->print(F("          "));
       this->pLCD->setCursor(0, 3);
-      this->pLCD->print(String() + ">>> Fee: " + moneyValue + "K   ");
+      this->pLCD->print(String() + ">>> Fee: " + (uint16_t)moneyValue + "K   ");
       this->clockEeprom.lastFee = moneyValue;
     }
     else
