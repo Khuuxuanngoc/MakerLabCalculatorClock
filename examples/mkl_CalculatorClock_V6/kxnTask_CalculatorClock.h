@@ -61,9 +61,9 @@ void ReadEeprom()
     // }
 
     this->clockEeprom.costValue[0] = 240;
-    this->clockEeprom.costValue[1] = 300;
+    this->clockEeprom.costValue[1] = 360;
     this->clockEeprom.costValue[2] = 240;
-    this->clockEeprom.costValue[3] = 300;
+    this->clockEeprom.costValue[3] = 360;
     
 
     this->clockEeprom.minFreeValue[0] = 10;

@@ -1,6 +1,9 @@
 /**
  *  Idea:
  *      - mkl_CalculatorClock_V6:
+ *          - 28/2/2026 Thay đổi biểu phí:
+ *              - HD: 300->360K/h
+ * 
  *          - Thay đổi Dịch vụ, có 2 DV chính là TV, HD; TV* và HD*
  *              - TV và HD: có đếm lùi 10', khi đếm lùi thì Start và Stop là 00:00:00; Số phút đếm lùi nằm phía sau chữ FREE
  *              - TV* và HD*: Start và Stop sẽ hiện thời gian hiện tại, sau đó Stop nhảy thời gian như cũ
